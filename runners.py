@@ -190,11 +190,11 @@ class ModelRunner:
             rank_logger.info(f"State sharding type: {type(self.state_sharding)}")
             self.init_fn = pjit.pjit(self.init, out_shardings=self.state_sharding)
 
-    def init(self, rng: jax.Array, data) -> TrainingState:
+    def init(self, rng: jax.Array, data) -> dict:
         assert self.transform_forward
         rng, init_rng = jax.random.split(rng)
         params = self.forward.init(init_rng, data["inputs"])
-        return TrainingState(params=params)
+        return params
 
     def get_state_sharding(self, init_data):
         assert self.transform_forward
